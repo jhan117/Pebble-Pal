@@ -16,21 +16,28 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-          fontFamily: GoogleFonts.notoSans().fontFamily,
-          textTheme: TextTheme(
-            titleLarge: titleLarge,
-            bodyMedium: bodyMedium,
+        fontFamily: GoogleFonts.notoSans().fontFamily,
+        textTheme: TextTheme(
+          titleLarge: titleLarge,
+          bodyMedium: bodyMedium,
+        ),
+        scaffoldBackgroundColor: colorScheme.surface,
+        appBarTheme: AppBarTheme(
+          backgroundColor: colorScheme.surface,
+        ),
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: colorScheme.onSurface,
+          unselectedItemColor: colorScheme.outlineVariant,
+          backgroundColor: colorScheme.surface,
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: colorScheme.primaryContainer,
+            foregroundColor: colorScheme.onPrimaryContainer,
           ),
-          scaffoldBackgroundColor: backgroundColor,
-          appBarTheme: const AppBarTheme(
-            backgroundColor: backgroundColor,
-          ),
-          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-            type: BottomNavigationBarType.fixed,
-            selectedItemColor: primaryFontColor,
-            unselectedItemColor: secondaryFontColor,
-            backgroundColor: backgroundColor,
-          )),
+        ),
+      ),
       home: const SplashScreen(),
     );
   }
