@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graytalk/presentation/pages/home_screen.dart';
+import 'package:graytalk/presentation/pages/light_screen.dart';
 
 class RootScreen extends StatefulWidget {
   const RootScreen({super.key});
@@ -43,7 +44,7 @@ class _RootScreenState extends State<RootScreen> with TickerProviderStateMixin {
 
   List<Widget> renderChildren() {
     return [
-      const Text("light"),
+      const LightScreen(),
       const Text("stack"),
       const HomeScreen(),
       const Text("check"),
