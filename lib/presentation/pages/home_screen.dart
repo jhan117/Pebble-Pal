@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:graytalk/core/theme/colors.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -23,14 +24,14 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(
-            height: 24,
+            height: 20,
           ),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.only(top: 24, bottom: 24),
-            margin: const EdgeInsets.only(left: 24, right: 24),
+            margin: const EdgeInsets.only(left: 32, right: 32),
             decoration: BoxDecoration(
-                color: const Color(0xfffdeeee),
+                color: colorScheme.surfaceContainer,
                 borderRadius: BorderRadius.circular(12)),
             child: Column(
               children: [
@@ -46,7 +47,7 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(
-            height: 16,
+            height: 32,
           ),
         ],
       ),

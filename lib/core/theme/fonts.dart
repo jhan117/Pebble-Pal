@@ -6,12 +6,11 @@ final titleLarge = TextStyle(
   fontSize: 24,
   fontWeight: FontWeight.w900,
   fontFamily: GoogleFonts.sarpanch().fontFamily,
-  color: titleColor,
+  color: colorScheme.inversePrimary,
 );
 
 final bodyMedium = TextStyle(
-  fontSize: 16,
+  fontSize: 14,
   fontWeight: FontWeight.normal,
-  fontFamily: GoogleFonts.notoSans().fontFamily,
-  color: secondaryFontColor,
+  color: colorScheme.onSurfaceVariant,
 );
