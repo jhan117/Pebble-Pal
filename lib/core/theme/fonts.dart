@@ -9,6 +9,18 @@ final titleLarge = TextStyle(
   color: colorScheme.inversePrimary,
 );
 
+final headlineMedium = TextStyle(
+  fontSize: 24,
+  fontWeight: FontWeight.w800,
+  color: colorScheme.onSurface,
+);
+
+final bodyLarge = TextStyle(
+  fontSize: 16,
+  fontWeight: FontWeight.w600,
+  color: colorScheme.onSurfaceVariant,
+);
+
 final bodyMedium = TextStyle(
   fontSize: 14,
   fontWeight: FontWeight.normal,
