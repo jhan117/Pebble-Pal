@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graytalk/presentation/pages/root_screen.dart';
+import 'package:graytalk/presentation/pages/bluetooth_screen.dart';
 
 class IntroHeader extends StatelessWidget {
   final int pageNum;
@@ -24,8 +25,8 @@ class IntroHeader extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => const RootScreen()));
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (context) => const BluetoothScreen()));
           },
           child: const Text(
             'Skip',
