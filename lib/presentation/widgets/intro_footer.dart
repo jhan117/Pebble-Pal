@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:graytalk/core/theme/colors.dart';
-import 'package:graytalk/presentation/pages/root_screen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:graytalk/presentation/pages/bluetooth_screen.dart';
 

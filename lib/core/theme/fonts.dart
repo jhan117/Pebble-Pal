@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:graytalk/core/theme/colors.dart';
 
+final textTheme = TextTheme(
+  titleLarge: titleLarge,
+  headlineMedium: headlineMedium,
+  bodyMedium: bodyMedium,
+);
+
 final titleLarge = TextStyle(
   fontSize: 24,
   fontWeight: FontWeight.w900,
