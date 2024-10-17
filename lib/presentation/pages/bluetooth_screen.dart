@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:graytalk/core/theme/colors.dart';
 import 'package:graytalk/core/theme/fonts.dart';
+import 'package:graytalk/presentation/pages/root_screen.dart';
 
 class BluetoothScreen extends StatefulWidget {
   const BluetoothScreen({super.key});
@@ -15,9 +16,31 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
   final String targetServiceUUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
   final String impactSensorUUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
 
+  @override
+  void initState() {
+    super.initState();
+    checkConnectedDevices();
+  }
+
+  Future<void> checkConnectedDevices() async {
+    List<BluetoothDevice> devices = FlutterBluePlus.connectedDevices;
+
+    for (BluetoothDevice device in devices) {
+      if (device.platformName == deviceName) {
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const RootScreen()));
+      }
+      return;
+    }
+  }
+
   Future<void> connectToDevice(BluetoothDevice device) async {
     try {
       await device.connect();
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const RootScreen()));
+      }
 
       List<BluetoothService> services = await device.discoverServices();
       for (BluetoothService srv in services) {
@@ -44,6 +67,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
       for (ScanResult r in results) {
         if (r.device.platformName == deviceName) {
           connectToDevice(r.device);
+
           break;
         }
       }
@@ -64,7 +88,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                "연결중...",
+                "연결 중...",
                 style: textTheme.bodyMedium,
               ),
               const SizedBox(height: 32),
