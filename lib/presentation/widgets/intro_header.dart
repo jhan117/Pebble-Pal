@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:graytalk/presentation/pages/root_screen.dart';
 import 'package:graytalk/presentation/pages/bluetooth_screen.dart';
 
 class IntroHeader extends StatelessWidget {
