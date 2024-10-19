@@ -12,7 +12,6 @@ dependencies:
   flutter_blue_plus: ^1.33.4
   google_fonts: ^6.2.1
   smooth_page_indicator: ^1.2.0+3
-  permission_handler: ^11.3.1
 
 dev_dependencies:
   flutter_test:
