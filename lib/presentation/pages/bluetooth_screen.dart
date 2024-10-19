@@ -13,8 +13,8 @@ class BluetoothScreen extends StatefulWidget {
 
 class _BluetoothScreenState extends State<BluetoothScreen> {
   final String deviceName = "DORI";
-  final String targetServiceUUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
-  final String impactSensorUUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
+  final String serviceUUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
+  final String characteristicUUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
 
   @override
   void initState() {
@@ -44,9 +44,9 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
 
       List<BluetoothService> services = await device.discoverServices();
       for (BluetoothService srv in services) {
-        if (srv.uuid.toString() == targetServiceUUID) {
+        if (srv.uuid.toString() == serviceUUID) {
           for (BluetoothCharacteristic char in srv.characteristics) {
-            if (char.uuid.toString() == impactSensorUUID) {
+            if (char.uuid.toString() == characteristicUUID) {
               // 알림 설정
               char.lastValueStream.listen((value) {
                 print('Read value: $value');
