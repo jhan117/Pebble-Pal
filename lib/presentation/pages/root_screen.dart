@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:graytalk/presentation/pages/diary_screen.dart';
 import 'package:graytalk/presentation/pages/home_screen.dart';
+import 'package:graytalk/presentation/state/tab_idx_provider.dart';
+import 'package:provider/provider.dart';
 
 class RootScreen extends StatefulWidget {
   const RootScreen({super.key});
@@ -14,19 +17,35 @@ class _RootScreenState extends State<RootScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    final tabIdxProvider = context.read<TabIdxProvider>();
 
-    _tabController = TabController(length: 5, vsync: this);
-    _tabController!.index = 2;
-    _tabController!.addListener(tabListener);
+    _tabController = TabController(
+      length: 5,
+      vsync: this,
+      initialIndex: tabIdxProvider.currentIdx,
+    );
+    tabIdxProvider.addListener(_tabListener);
   }
 
-  void tabListener() {
-    setState(() {});
+  @override
+  void dispose() {
+    context.read<TabIdxProvider>().removeListener(_tabListener);
+    _tabController!.dispose();
+    super.dispose();
+  }
+
+  void _tabListener() {
+    final tabIdx = context.read<TabIdxProvider>().currentIdx;
+
+    if (_tabController!.index != tabIdx) {
+      _tabController!.animateTo(tabIdx);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final tabIdxProvider = context.watch<TabIdxProvider>();
 
     return Scaffold(
         appBar: AppBar(
@@ -36,37 +55,43 @@ class _RootScreenState extends State<RootScreen> with TickerProviderStateMixin {
           ),
           centerTitle: true,
         ),
-        body:
-            TabBarView(controller: _tabController, children: renderChildren()),
-        bottomNavigationBar: renderBottomNavigation());
-  }
-
-  List<Widget> renderChildren() {
-    return [
-      const Text("light"),
-      const Text("stack"),
-      const HomeScreen(),
-      const Text("check"),
-      const Text("settings"),
-    ];
-  }
-
-  BottomNavigationBar renderBottomNavigation() {
-    return BottomNavigationBar(
-      currentIndex: _tabController!.index,
-      onTap: (int idx) {
-        setState(() {
-          _tabController!.animateTo(idx);
-        });
-      },
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.lightbulb), label: "무드등"),
-        BottomNavigationBarItem(icon: Icon(Icons.layers), label: "일기"),
-        BottomNavigationBarItem(icon: Icon(Icons.eco), label: "홈"),
-        BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today), label: "월간 일기"),
-        BottomNavigationBarItem(icon: Icon(Icons.settings), label: "설정"),
-      ],
-    );
+        body: TabBarView(
+          controller: _tabController,
+          children: const [
+            Text("light"),
+            DiaryScreen(),
+            HomeScreen(),
+            Text("check"),
+            Text("settings"),
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: tabIdxProvider.currentIdx,
+          onTap: (int idx) {
+            tabIdxProvider.setIdx(idx);
+          },
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.lightbulb),
+              label: "무드등",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.layers),
+              label: "일기",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.eco),
+              label: "홈",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.calendar_today),
+              label: "월간 일기",
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: "설정",
+            ),
+          ],
+        ));
   }
 }

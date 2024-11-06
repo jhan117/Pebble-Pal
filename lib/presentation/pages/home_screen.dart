@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graytalk/core/theme/colors.dart';
+import 'package:graytalk/presentation/state/tab_idx_provider.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -7,6 +9,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final tabIdxProvider = context.watch<TabIdxProvider>();
 
     return SizedBox(
       width: double.infinity,
@@ -23,32 +26,34 @@ class HomeScreen extends StatelessWidget {
               fit: BoxFit.cover,
             ),
           ),
-          const SizedBox(
-            height: 20,
-          ),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.only(top: 24, bottom: 24),
-            margin: const EdgeInsets.only(left: 32, right: 32),
-            decoration: BoxDecoration(
+          const SizedBox(height: 20),
+          GestureDetector(
+            onTap: () {
+              tabIdxProvider.setIdx(1);
+            },
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.only(top: 32, bottom: 32),
+              margin: const EdgeInsets.only(left: 32, right: 32),
+              decoration: BoxDecoration(
                 color: colorScheme.surfaceContainer,
-                borderRadius: BorderRadius.circular(12)),
-            child: Column(
-              children: [
-                Text(
-                  "금요일인 오늘!",
-                  style: textTheme.bodyMedium,
-                ),
-                Text(
-                  '가장 기억에 남는 일이 뭐야?',
-                  style: textTheme.bodyMedium,
-                )
-              ],
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    "금요일인 오늘!",
+                    style: textTheme.bodyMedium,
+                  ),
+                  Text(
+                    '가장 기억에 남는 일이 뭐야?',
+                    style: textTheme.bodyMedium,
+                  )
+                ],
+              ),
             ),
           ),
-          const SizedBox(
-            height: 32,
-          ),
+          const SizedBox(height: 32),
         ],
       ),
     );
