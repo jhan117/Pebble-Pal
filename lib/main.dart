@@ -3,12 +3,16 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:graytalk/core/theme/colors.dart';
 import 'package:graytalk/core/theme/fonts.dart';
 import 'package:graytalk/presentation/pages/splash_screen.dart';
+import 'package:graytalk/presentation/state/question_provider.dart';
 import 'package:graytalk/presentation/state/tab_idx_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(ChangeNotifierProvider(
-    create: (context) => TabIdxProvider(),
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (context) => TabIdxProvider()),
+      ChangeNotifierProvider(create: (context) => QuestionProvider()),
+    ],
     child: const MainApp(),
   ));
 }
