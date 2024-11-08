@@ -1,8 +1,6 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:graytalk/presentation/state/question_provider.dart';
-
 import 'package:graytalk/presentation/state/tab_idx_provider.dart';
 import 'package:graytalk/presentation/widgets/question_box.dart';
 import 'package:provider/provider.dart';

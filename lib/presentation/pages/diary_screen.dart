@@ -12,16 +12,17 @@ class DiaryScreen extends StatelessWidget {
     final questions = questionProvider.randomQuestions;
 
     return Wrap(
-        spacing: 0,
-        runSpacing: 32,
-        alignment: WrapAlignment.center,
-        runAlignment: WrapAlignment.center,
-        children: List.generate(
-          questions.length,
-          (idx) => QuestionBox(
-            questionText: questions[idx],
-            onRefresh: () => questionProvider.refreshQuestionAt(idx),
-          ),
-        ));
+      spacing: 0,
+      runSpacing: 32,
+      alignment: WrapAlignment.center,
+      runAlignment: WrapAlignment.center,
+      children: List.generate(
+        questions.length,
+        (idx) => QuestionBox(
+          questionText: questions[idx],
+          onRefresh: () => questionProvider.refreshQuestionAt(idx),
+        ),
+      ),
+    );
   }
 }

@@ -57,50 +57,51 @@ class _RootScreenState extends State<RootScreen> with TickerProviderStateMixin {
     final tabIdxProvider = context.watch<TabIdxProvider>();
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'Graytalk',
-            style: textTheme.titleLarge,
+      appBar: AppBar(
+        title: Text(
+          'Graytalk',
+          style: textTheme.titleLarge,
+        ),
+        centerTitle: true,
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: const [
+          Text("light"),
+          DiaryScreen(),
+          HomeScreen(),
+          Text("check"),
+          Text("settings"),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: tabIdxProvider.currentIdx,
+        onTap: (int idx) {
+          tabIdxProvider.setIdx(idx);
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.lightbulb),
+            label: "무드등",
           ),
-          centerTitle: true,
-        ),
-        body: TabBarView(
-          controller: _tabController,
-          children: const [
-            Text("light"),
-            DiaryScreen(),
-            HomeScreen(),
-            Text("check"),
-            Text("settings"),
-          ],
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: tabIdxProvider.currentIdx,
-          onTap: (int idx) {
-            tabIdxProvider.setIdx(idx);
-          },
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.lightbulb),
-              label: "무드등",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.layers),
-              label: "일기",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.eco),
-              label: "홈",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_today),
-              label: "월간 일기",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              label: "설정",
-            ),
-          ],
-        ));
+          BottomNavigationBarItem(
+            icon: Icon(Icons.layers),
+            label: "일기",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.eco),
+            label: "홈",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_today),
+            label: "월간 일기",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: "설정",
+          ),
+        ],
+      ),
+    );
   }
 }
