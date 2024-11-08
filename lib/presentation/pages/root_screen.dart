@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:graytalk/presentation/widgets/calendar.dart';
 import 'package:graytalk/presentation/pages/home_screen.dart';
 
 class RootScreen extends StatefulWidget {
@@ -46,7 +47,7 @@ class _RootScreenState extends State<RootScreen> with TickerProviderStateMixin {
       const Text("light"),
       const Text("stack"),
       const HomeScreen(),
-      const Text("check"),
+      const CalendarWidget(),
       const Text("settings"),
     ];
   }
