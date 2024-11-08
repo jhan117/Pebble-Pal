@@ -17,6 +17,7 @@ class _RootScreenState extends State<RootScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+
     final tabIdxProvider = context.read<TabIdxProvider>();
 
     _tabController = TabController(
@@ -24,7 +25,15 @@ class _RootScreenState extends State<RootScreen> with TickerProviderStateMixin {
       vsync: this,
       initialIndex: tabIdxProvider.currentIdx,
     );
+
+    _tabController!.addListener(() {
+      if (_tabController!.index != _tabController!.previousIndex) {
+        debugPrint('Tab changed to index: ${_tabController!.index} via slide');
+        tabIdxProvider.setIdx(_tabController!.index);
+      }
+    });
     tabIdxProvider.addListener(_tabListener);
+    debugPrint('Initial tab index from provider: ${tabIdxProvider.currentIdx}');
   }
 
   @override
