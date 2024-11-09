@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graytalk/presentation/pages/diary_screen.dart';
 import 'package:graytalk/presentation/pages/home_screen.dart';
-import 'package:graytalk/presentation/state/page_provider.dart';
+import 'package:graytalk/presentation/state/question_provider.dart';
 import 'package:provider/provider.dart';
 
 class RootScreen extends StatefulWidget {
@@ -12,55 +12,44 @@ class RootScreen extends StatefulWidget {
 }
 
 class _RootScreenState extends State<RootScreen> {
+  int _curPage = 2;
   late PageController _pageController;
 
   @override
   void initState() {
     super.initState();
 
-    final pageProvider = context.read<PageProvider>();
-    _pageController = PageController(initialPage: pageProvider.curIdx);
-
-    _pageController.addListener(_pageChangeListener);
-    pageProvider.addListener(_pageProviderListener);
-
-    debugPrint('Initial tab index from provider: ${pageProvider.curIdx}');
+    _pageController = PageController(initialPage: _curPage);
   }
 
   @override
   void dispose() {
     super.dispose();
 
-    context.read<PageProvider>().removeListener(_pageProviderListener);
     _pageController.dispose();
   }
 
-  void _pageChangeListener() {
-    final page = _pageController.page?.round();
-    final pageProvider = context.read<PageProvider>();
-    if (page != null && page != pageProvider.curIdx) {
-      pageProvider.setIdx(page);
+  void _onPageChanged(int page) {
+    setState(() {
+      _curPage = page;
+    });
 
-      debugPrint('Page changed to index: $page via slide');
+    if (page == 2) {
+      context.read<QuestionProvider>().getRandQuestion();
     }
   }
 
-  void _pageProviderListener() {
-    final curPage = context.read<PageProvider>().curIdx;
-
-    if (_pageController.page?.round() != curPage) {
-      _pageController.animateToPage(
-        curPage,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.ease,
-      );
-    }
+  void _onItemTapped(int index) {
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final pageProvider = context.watch<PageProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -72,6 +61,7 @@ class _RootScreenState extends State<RootScreen> {
       ),
       body: PageView(
         controller: _pageController,
+        onPageChanged: _onPageChanged,
         children: const [
           Text("light"),
           DiaryScreen(),
@@ -81,10 +71,8 @@ class _RootScreenState extends State<RootScreen> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: pageProvider.curIdx,
-        onTap: (int idx) {
-          pageProvider.setIdx(idx);
-        },
+        currentIndex: _curPage,
+        onTap: _onItemTapped,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.lightbulb),

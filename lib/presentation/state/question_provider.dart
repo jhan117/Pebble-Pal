@@ -3,16 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:graytalk/core/utils/diary_questions.dart';
 
 class QuestionProvider extends ChangeNotifier {
+  final random = Random();
   final List<String> _randomQuestions = [];
+  late int _selectedIdx;
 
   QuestionProvider() {
     _initializeQuestions(3);
+    getRandQuestion();
   }
 
   void _initializeQuestions(int count) {
     final shuffledQuestions = List.of(DiaryQuestions.questions)..shuffle();
     _randomQuestions.addAll(shuffledQuestions.take(3));
-    debugPrint('Initialized questions: $_randomQuestions');
     notifyListeners();
   }
 
@@ -23,12 +25,22 @@ class QuestionProvider extends ChangeNotifier {
 
     if (availableQuestions.isNotEmpty) {
       String newQuestion =
-          availableQuestions[Random().nextInt(availableQuestions.length)];
+          availableQuestions[random.nextInt(availableQuestions.length)];
       _randomQuestions[index] = newQuestion;
-      debugPrint('Refreshed question at index $index: $newQuestion');
       notifyListeners();
     }
   }
 
+  void getRandQuestion() {
+    _selectedIdx = random.nextInt(_randomQuestions.length);
+    notifyListeners();
+  }
+
+  String getByIdx([int? idx]) {
+    idx ??= _selectedIdx;
+    return _randomQuestions[idx];
+  }
+
   List<String> get randomQuestions => _randomQuestions;
+  int get selectedIdx => _selectedIdx;
 }

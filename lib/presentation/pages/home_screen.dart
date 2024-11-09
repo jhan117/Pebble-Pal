@@ -1,7 +1,5 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:graytalk/presentation/state/question_provider.dart';
-import 'package:graytalk/presentation/state/page_provider.dart';
 import 'package:graytalk/presentation/widgets/question_box.dart';
 import 'package:provider/provider.dart';
 
@@ -13,42 +11,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int? selectedIndex;
-  String q = "";
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    if (context.read<PageProvider>().curIdx == 2) {
-      final randomQuestions = context.read<QuestionProvider>().randomQuestions;
-      selectedIndex = Random().nextInt(randomQuestions.length);
-      q = randomQuestions[selectedIndex!];
-
-      debugPrint('didChangeDependencies called');
-      debugPrint('Selected index: $selectedIndex');
-      debugPrint('Selected question: $q');
-    }
-  }
-
   void refreshQuestion() {
-    if (selectedIndex != null) {
-      final questionProvider = context.read<QuestionProvider>();
-      questionProvider.refreshQuestionAt(selectedIndex!);
-      final randomQuestions = questionProvider.randomQuestions;
+    final questionProvider = context.read<QuestionProvider>();
 
-      debugPrint('Refreshing question at index: $selectedIndex');
-      debugPrint('New question: ${randomQuestions[selectedIndex!]}');
-
-      setState(() {
-        q = randomQuestions[selectedIndex!];
-      });
-    }
+    questionProvider.refreshQuestionAt(questionProvider.selectedIdx);
   }
 
   @override
   Widget build(BuildContext context) {
-    final tabIdxProvider = context.watch<PageProvider>();
+    String question = context.watch<QuestionProvider>().getByIdx();
 
     return SizedBox(
       width: double.infinity,
@@ -66,12 +37,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const SizedBox(height: 20),
-          GestureDetector(
-            onTap: () => tabIdxProvider.setIdx(1),
-            child: QuestionBox(
-              questionText: q,
-              onRefresh: refreshQuestion,
-            ),
+          QuestionBox(
+            questionText: question,
+            onRefresh: refreshQuestion,
           ),
           const SizedBox(height: 32),
         ],
