@@ -4,13 +4,13 @@ import 'package:graytalk/core/theme/colors.dart';
 import 'package:graytalk/core/theme/fonts.dart';
 import 'package:graytalk/presentation/pages/splash_screen.dart';
 import 'package:graytalk/presentation/state/question_provider.dart';
-import 'package:graytalk/presentation/state/tab_idx_provider.dart';
+import 'package:graytalk/presentation/state/page_provider.dart';
 import 'package:provider/provider.dart';
 
 void main() {
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(create: (context) => TabIdxProvider()),
+      ChangeNotifierProvider(create: (context) => PageProvider()),
       ChangeNotifierProvider(create: (context) => QuestionProvider()),
     ],
     child: const MainApp(),
