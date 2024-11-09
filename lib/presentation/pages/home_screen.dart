@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:graytalk/presentation/state/question_provider.dart';
-import 'package:graytalk/presentation/state/tab_idx_provider.dart';
+import 'package:graytalk/presentation/state/page_provider.dart';
 import 'package:graytalk/presentation/widgets/question_box.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if (context.read<TabIdxProvider>().currentIdx == 2) {
+    if (context.read<PageProvider>().curIdx == 2) {
       final randomQuestions = context.read<QuestionProvider>().randomQuestions;
       selectedIndex = Random().nextInt(randomQuestions.length);
       q = randomQuestions[selectedIndex!];
@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tabIdxProvider = context.watch<TabIdxProvider>();
+    final tabIdxProvider = context.watch<PageProvider>();
 
     return SizedBox(
       width: double.infinity,

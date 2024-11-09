@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:graytalk/presentation/pages/diary_screen.dart';
 import 'package:graytalk/presentation/pages/home_screen.dart';
-import 'package:graytalk/presentation/state/tab_idx_provider.dart';
+import 'package:graytalk/presentation/state/page_provider.dart';
 import 'package:provider/provider.dart';
 
 class RootScreen extends StatefulWidget {
@@ -11,50 +11,56 @@ class RootScreen extends StatefulWidget {
   State<RootScreen> createState() => _RootScreenState();
 }
 
-class _RootScreenState extends State<RootScreen> with TickerProviderStateMixin {
-  TabController? _tabController;
+class _RootScreenState extends State<RootScreen> {
+  late PageController _pageController;
 
   @override
   void initState() {
     super.initState();
 
-    final tabIdxProvider = context.read<TabIdxProvider>();
+    final pageProvider = context.read<PageProvider>();
+    _pageController = PageController(initialPage: pageProvider.curIdx);
 
-    _tabController = TabController(
-      length: 5,
-      vsync: this,
-      initialIndex: tabIdxProvider.currentIdx,
-    );
+    _pageController.addListener(_pageChangeListener);
+    pageProvider.addListener(_pageProviderListener);
 
-    _tabController!.addListener(() {
-      if (_tabController!.index != _tabController!.previousIndex) {
-        debugPrint('Tab changed to index: ${_tabController!.index} via slide');
-        tabIdxProvider.setIdx(_tabController!.index);
-      }
-    });
-    tabIdxProvider.addListener(_tabListener);
-    debugPrint('Initial tab index from provider: ${tabIdxProvider.currentIdx}');
+    debugPrint('Initial tab index from provider: ${pageProvider.curIdx}');
   }
 
   @override
   void dispose() {
-    context.read<TabIdxProvider>().removeListener(_tabListener);
-    _tabController!.dispose();
     super.dispose();
+
+    context.read<PageProvider>().removeListener(_pageProviderListener);
+    _pageController.dispose();
   }
 
-  void _tabListener() {
-    final tabIdx = context.read<TabIdxProvider>().currentIdx;
+  void _pageChangeListener() {
+    final page = _pageController.page?.round();
+    final pageProvider = context.read<PageProvider>();
+    if (page != null && page != pageProvider.curIdx) {
+      pageProvider.setIdx(page);
 
-    if (_tabController!.index != tabIdx) {
-      _tabController!.animateTo(tabIdx);
+      debugPrint('Page changed to index: $page via slide');
+    }
+  }
+
+  void _pageProviderListener() {
+    final curPage = context.read<PageProvider>().curIdx;
+
+    if (_pageController.page?.round() != curPage) {
+      _pageController.animateToPage(
+        curPage,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.ease,
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final tabIdxProvider = context.watch<TabIdxProvider>();
+    final pageProvider = context.watch<PageProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -64,8 +70,8 @@ class _RootScreenState extends State<RootScreen> with TickerProviderStateMixin {
         ),
         centerTitle: true,
       ),
-      body: TabBarView(
-        controller: _tabController,
+      body: PageView(
+        controller: _pageController,
         children: const [
           Text("light"),
           DiaryScreen(),
@@ -75,9 +81,9 @@ class _RootScreenState extends State<RootScreen> with TickerProviderStateMixin {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: tabIdxProvider.currentIdx,
+        currentIndex: pageProvider.curIdx,
         onTap: (int idx) {
-          tabIdxProvider.setIdx(idx);
+          pageProvider.setIdx(idx);
         },
         items: const [
           BottomNavigationBarItem(
