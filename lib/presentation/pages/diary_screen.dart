@@ -19,6 +19,7 @@ class DiaryScreen extends StatelessWidget {
       children: List.generate(
         questions.length,
         (idx) => QuestionBox(
+          questionIdx: idx,
           questionText: questions[idx],
           onRefresh: () => questionProvider.refreshQuestionAt(idx),
         ),

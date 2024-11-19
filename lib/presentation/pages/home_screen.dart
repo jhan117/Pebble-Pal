@@ -19,7 +19,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String question = context.watch<QuestionProvider>().getByIdx();
+    final questionProvider = context.watch<QuestionProvider>();
+    String question = questionProvider.getByIdx();
 
     return SizedBox(
       width: double.infinity,
@@ -38,6 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           const SizedBox(height: 20),
           QuestionBox(
+            questionIdx: questionProvider.selectedIdx,
             questionText: question,
             onRefresh: refreshQuestion,
           ),

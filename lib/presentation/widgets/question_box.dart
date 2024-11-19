@@ -3,6 +3,7 @@ import 'package:graytalk/core/theme/colors.dart';
 import 'package:graytalk/presentation/pages/write_screen.dart';
 
 class QuestionBox extends StatelessWidget {
+  final int questionIdx;
   final String questionText;
   final VoidCallback onRefresh;
 
@@ -10,6 +11,7 @@ class QuestionBox extends StatelessWidget {
     super.key,
     required this.questionText,
     required this.onRefresh,
+    required this.questionIdx,
   });
 
   @override
@@ -18,8 +20,8 @@ class QuestionBox extends StatelessWidget {
     List<String> splitText = questionText.split('\n');
 
     return GestureDetector(
-      onTap: () => Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const WriteScreen())),
+      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => WriteScreen(questionIdx: questionIdx))),
       child: Stack(
         children: [
           Container(
