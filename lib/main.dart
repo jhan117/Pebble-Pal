@@ -6,8 +6,8 @@ import 'package:graytalk/presentation/pages/splash_screen.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // Flutter 엔진 초기화
-  await initializeDateFormatting(); // 로케일 데이터 초기화
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting();
   runApp(const MainApp());
 }
 
