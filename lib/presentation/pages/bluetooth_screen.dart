@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:graytalk/core/theme/colors.dart';
-import 'package:graytalk/core/theme/fonts.dart';
 import 'package:graytalk/presentation/pages/root_screen.dart';
 
 class BluetoothScreen extends StatefulWidget {
@@ -12,96 +12,47 @@ class BluetoothScreen extends StatefulWidget {
 }
 
 class _BluetoothScreenState extends State<BluetoothScreen> {
-  final String deviceName = "DORI";
-  final String serviceUUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
-  final String characteristicUUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
-
-  @override
-  void initState() {
-    super.initState();
-    checkConnectedDevices();
-  }
-
-  Future<void> checkConnectedDevices() async {
-    List<BluetoothDevice> devices = FlutterBluePlus.connectedDevices;
-
-    for (BluetoothDevice device in devices) {
-      if (device.platformName == deviceName) {
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const RootScreen()));
-      }
-      return;
-    }
-  }
-
-  Future<void> connectToDevice(BluetoothDevice device) async {
-    try {
-      await device.connect();
-      if (mounted) {
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const RootScreen()));
-      }
-
-      List<BluetoothService> services = await device.discoverServices();
-      for (BluetoothService srv in services) {
-        if (srv.uuid.toString() == serviceUUID) {
-          for (BluetoothCharacteristic char in srv.characteristics) {
-            if (char.uuid.toString() == characteristicUUID) {
-              // 알림 설정
-              char.lastValueStream.listen((value) {
-                print('Read value: $value');
-              });
-              await char.setNotifyValue(true);
-            }
-          }
-        }
-      }
-    } catch (e) {
-      print('Error connecting to device: $e');
-    }
-  }
-
-  Future<void> startScanAndConnect() async {
-    FlutterBluePlus.startScan(timeout: const Duration(seconds: 10));
-    FlutterBluePlus.scanResults.listen((results) {
-      for (ScanResult r in results) {
-        if (r.device.platformName == deviceName) {
-          connectToDevice(r.device);
-
-          break;
-        }
-      }
-    });
-
-    FlutterBluePlus.stopScan();
-  }
-
-  void showLoadingDialog(BuildContext context) {
+  void showDeviceManagementDialog(BuildContext context) {
     showDialog(
       context: context,
       barrierDismissible: true,
       builder: (BuildContext context) => AlertDialog(
         backgroundColor: defaultBG,
+        contentPadding: const EdgeInsets.all(16),
         content: SizedBox(
-          height: 160,
+          height: 500,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                "연결 중...",
-                style: textTheme.bodyMedium,
+              Expanded(
+                child: Rectangle12(),
               ),
-              const SizedBox(height: 32),
-              CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
+              const SizedBox(height: 16),
+              ValueListenableBuilder<bool>(
+                valueListenable: BluetoothManager.isConnectedNotifier,
+                builder: (context, isConnected, child) {
+                  return ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: const Size.fromHeight(40),
+                    ),
+                    onPressed: isConnected
+                        ? () {
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => const RootScreen()),
+                            );
+                          }
+                        : null,
+                    child: Text(
+                      isConnected ? '확인' : '연결 대기 중...',
+                    ),
+                  );
+                },
               ),
             ],
           ),
         ),
       ),
     );
-
-    startScanAndConnect();
   }
 
   @override
@@ -125,16 +76,12 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
                   width: 100,
                   fit: BoxFit.cover,
                 ),
-                const SizedBox(
-                  height: 16,
-                ),
+                const SizedBox(height: 16),
                 Text(
                   "장치와 연결되지 않았습니다.",
                   style: textTheme.bodyMedium,
                 ),
-                const SizedBox(
-                  height: 4,
-                ),
+                const SizedBox(height: 4),
                 Text(
                   "장치의 전원이 켜져 있는지 확인하고 Bluetooth를 통해 장치를 연결하십시오.",
                   style: textTheme.bodyMedium,
@@ -147,11 +94,152 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
             style: ElevatedButton.styleFrom(
               minimumSize: const Size.fromHeight(40),
             ),
-            onPressed: () => showLoadingDialog(context),
-            child: const Text('연결'),
+            onPressed: () => showDeviceManagementDialog(context),
+            child: const Text('장치 관리'),
           ),
         ],
       ),
+    );
+  }
+}
+
+class Rectangle12 extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
+
+    return Container(
+      width: 304,
+      height: 449,
+      decoration: ShapeDecoration(
+        color: backgroundColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+      ),
+      child: const BluetoothManager(),
+    );
+  }
+}
+
+class BluetoothManager extends StatefulWidget {
+  const BluetoothManager({super.key});
+
+  static final ValueNotifier<bool> isConnectedNotifier =
+      ValueNotifier<bool>(false);
+  @override
+  _BluetoothManagerState createState() => _BluetoothManagerState();
+}
+
+class _BluetoothManagerState extends State<BluetoothManager> {
+  List<ScanResult> scanResults = [];
+  BluetoothDevice? _selectedDevice;
+
+  @override
+  void initState() {
+    super.initState();
+    _startScan();
+  }
+
+  void _startScan() {
+    FlutterBluePlus.startScan(timeout: const Duration(seconds: 10));
+    FlutterBluePlus.scanResults.listen((results) {
+      setState(() {
+        scanResults = results;
+      });
+    });
+  }
+
+  Future<void> _connectToDevice(BluetoothDevice device) async {
+    try {
+      await device.connect();
+      setState(() {
+        _selectedDevice = device;
+      });
+      BluetoothManager.isConnectedNotifier.value = true;
+      print('Connected to ${device.name}');
+    } catch (e) {
+      print('Failed to connect: $e');
+    }
+  }
+
+  Future<void> _disconnectFromDevice() async {
+    if (_selectedDevice != null) {
+      await _selectedDevice!.disconnect();
+      setState(() {
+        _selectedDevice = null;
+      });
+      BluetoothManager.isConnectedNotifier.value = false;
+      print('Disconnected');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        TextButton(
+          onPressed: _startScan,
+          style: TextButton.styleFrom(
+            backgroundColor: Colors.grey[200],
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          child: Text(
+            '장치 검색하기',
+            style: textTheme.bodyLarge?.copyWith(
+              fontFamily: GoogleFonts.notoSans().fontFamily,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Text(
+          '사용 가능한 기기:',
+          style: textTheme.titleMedium?.copyWith(
+            fontFamily: GoogleFonts.notoSans().fontFamily,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Expanded(
+          child: ListView(
+            children: scanResults.map((result) {
+              return ListTile(
+                title: Text(
+                  result.device.name.isNotEmpty
+                      ? result.device.name
+                      : 'Unknown Device',
+                  style: TextStyle(
+                    color: BluetoothManager.isConnectedNotifier.value &&
+                            result.device == _selectedDevice
+                        ? Colors.green
+                        : Colors.black,
+                    fontFamily: GoogleFonts.notoSans().fontFamily,
+                  ),
+                ),
+                subtitle: Text(result.device.id.toString()),
+                trailing: BluetoothManager.isConnectedNotifier.value &&
+                        result.device == _selectedDevice
+                    ? const Icon(Icons.bluetooth_connected)
+                    : const Icon(Icons.bluetooth),
+                onTap: () {
+                  if (BluetoothManager.isConnectedNotifier.value &&
+                      result.device == _selectedDevice) {
+                    _disconnectFromDevice();
+                  } else {
+                    _connectToDevice(result.device);
+                  }
+                },
+              );
+            }).toList(),
+          ),
+        ),
+      ],
     );
   }
 }
