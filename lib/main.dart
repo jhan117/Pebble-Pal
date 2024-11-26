@@ -5,8 +5,11 @@ import 'package:graytalk/core/theme/fonts.dart';
 import 'package:graytalk/presentation/pages/splash_screen.dart';
 import 'package:graytalk/presentation/state/question_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting();
   runApp(ChangeNotifierProvider(
     create: (context) => QuestionProvider(),
     child: const MainApp(),
