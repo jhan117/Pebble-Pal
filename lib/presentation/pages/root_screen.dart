@@ -3,6 +3,7 @@ import 'package:graytalk/presentation/pages/diary_screen.dart';
 import 'package:graytalk/presentation/widgets/calendar.dart';
 import 'package:graytalk/presentation/pages/home_screen.dart';
 import 'package:graytalk/presentation/state/question_provider.dart';
+import 'package:graytalk/presentation/pages/lighting_screen.dart';
 import 'package:provider/provider.dart';
 
 class RootScreen extends StatefulWidget {
@@ -64,7 +65,7 @@ class _RootScreenState extends State<RootScreen> {
         controller: _pageController,
         onPageChanged: _onPageChanged,
         children: const [
-          Text("light"),
+          LightingScreen(),
           DiaryScreen(),
           HomeScreen(),
           CalendarWidget(),
