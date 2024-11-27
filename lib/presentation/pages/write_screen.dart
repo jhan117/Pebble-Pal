@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:graytalk/data/model/diary_model.dart';
 import 'package:graytalk/presentation/state/question_provider.dart';
 import 'package:graytalk/presentation/widgets/question_box.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class WriteScreen extends StatefulWidget {
   final int questionIdx;
@@ -17,18 +19,46 @@ class WriteScreen extends StatefulWidget {
 class _WriteScreenState extends State<WriteScreen> {
   final ScrollController _scrollController = ScrollController();
   late final String formattedDate;
+  final TextEditingController _textController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    initializeDateFormatting('ko_KR', null);
     formattedDate = DateFormat('yyyy-MM-dd E', 'ko_KR').format(DateTime.now());
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    _textController.dispose();
     super.dispose();
+  }
+
+  Future<void> _onCreate() async {
+    final content = _textController.text;
+
+    print(content);
+
+    if (content.isEmpty) {
+      return;
+    }
+
+    final schedule = DiaryModel(
+        id: const Uuid().v4(),
+        questionIdx: widget.questionIdx,
+        content: content,
+        date: DateTime.now());
+
+    await FirebaseFirestore.instance
+        .collection(
+          'diaries',
+        )
+        .doc(schedule.id)
+        .set(schedule.toJson());
+
+    if (mounted) {
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -59,7 +89,7 @@ class _WriteScreenState extends State<WriteScreen> {
           IconButton(
             icon: const Icon(Icons.close),
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.of(context).pop();
             },
           ),
         ],
@@ -81,6 +111,7 @@ class _WriteScreenState extends State<WriteScreen> {
                 controller: _scrollController,
                 radius: const Radius.circular(10),
                 child: TextField(
+                  controller: _textController,
                   autofocus: true,
                   maxLines: null,
                   scrollController: _scrollController,
@@ -99,7 +130,7 @@ class _WriteScreenState extends State<WriteScreen> {
             children: [
               IconButton(
                 icon: const Icon(Icons.check, color: Colors.black),
-                onPressed: () => Navigator.pop(context),
+                onPressed: _onCreate,
               ),
             ],
           ),
