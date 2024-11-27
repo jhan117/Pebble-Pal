@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:graytalk/presentation/widgets/lighting_ui.dart';
 import 'package:graytalk/presentation/widgets/lighting_controller.dart';
+import 'package:graytalk/presentation/widgets/rgb_send.dart';
+import 'package:graytalk/presentation/pages/bluetooth_screen.dart';
 
 class LightingScreen extends StatefulWidget {
   const LightingScreen({super.key});
@@ -26,6 +28,25 @@ class _LightingScreenState extends State<LightingScreen> {
     super.dispose();
   }
 
+  Future<void> _sendRGBToDevice() async {
+    if (BluetoothManager.targetCharacteristic != null) {
+      final currentColor = lightingController.currentColor;
+      final brightness = lightingController.brightness;
+
+      int r = (currentColor.red * brightness).toInt();
+      int g = (currentColor.green * brightness).toInt();
+      int b = (currentColor.blue * brightness).toInt();
+
+      final lightingBluetooth = LightingBluetooth(
+        targetCharacteristic: BluetoothManager.targetCharacteristic!,
+      );
+
+      await lightingBluetooth.sendRGB(r, g, b);
+    } else {
+      print('No characteristic found.');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,22 +67,20 @@ class _LightingScreenState extends State<LightingScreen> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    lightingController.saveCurrentColor(context, () {
-                      setState(() {});
-                    });
+                    lightingController.saveCurrentColor();
+                    setState(() {});
                   },
                   child: const Text("색상 저장"),
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    lightingController.deleteCurrentColor(context, () {
-                      setState(() {});
-                    });
+                    lightingController.deleteCurrentColor();
+                    setState(() {});
                   },
                   child: const Text("색상 삭제"),
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: _sendRGBToDevice,
                   child: const Text("LED 적용"),
                 ),
               ],

@@ -44,31 +44,22 @@ class LightingController {
     await prefs.setDouble('brightness', brightness);
   }
 
-  void saveCurrentColor(BuildContext context, VoidCallback onSaved) {
-    if (savedColors.length >= maxColors) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("최대 $maxColors개의 색상만 저장할 수 있습니다.")),
-      );
-      return;
-    }
-    if (!savedColors.any((color) => color.value == currentColor.value)) {
-      savedColors.add(currentColor);
-      saveColorsToPreferences();
-      onSaved();
-    }
-  }
-
-  void deleteCurrentColor(BuildContext context, VoidCallback onDeleted) {
-    if (savedColors.any((color) => color.value == currentColor.value)) {
-      savedColors.removeWhere((color) => color.value == currentColor.value);
-      saveColorsToPreferences();
-      onDeleted();
-    }
-  }
-
   void updateBrightness(double value) {
     brightness = value;
     saveBrightness();
+  }
+
+  void saveCurrentColor() {
+    if (savedColors.length < maxColors &&
+        !savedColors.any((color) => color.value == currentColor.value)) {
+      savedColors.add(currentColor);
+      saveColorsToPreferences();
+    }
+  }
+
+  void deleteCurrentColor() {
+    savedColors.removeWhere((color) => color.value == currentColor.value);
+    saveColorsToPreferences();
   }
 
   void updateColorFromHex(String hex) {

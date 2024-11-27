@@ -129,6 +129,9 @@ class BluetoothManager extends StatefulWidget {
 
   static final ValueNotifier<bool> isConnectedNotifier =
       ValueNotifier<bool>(false);
+  static BluetoothCharacteristic? targetCharacteristic;
+  static BluetoothDevice? connectedDevice;
+
   @override
   State<BluetoothManager> createState() => _BluetoothManagerState();
 }
@@ -157,11 +160,30 @@ class _BluetoothManagerState extends State<BluetoothManager> {
       await device.connect();
       setState(() {
         _selectedDevice = device;
+        BluetoothManager.connectedDevice = device;
       });
       BluetoothManager.isConnectedNotifier.value = true;
+
+      await _discoverServices(device);
       print('Connected to ${device.name}');
     } catch (e) {
       print('Failed to connect: $e');
+    }
+  }
+
+  Future<void> _discoverServices(BluetoothDevice device) async {
+    List<BluetoothService> services = await device.discoverServices();
+    for (var service in services) {
+      if (service.uuid.toString() == '4fafc201-1fb5-459e-8fcc-c5c9c331914b') {
+        for (var characteristic in service.characteristics) {
+          if (characteristic.uuid.toString() ==
+              'beb5483e-36e1-4688-b7f5-ea07361b26a8') {
+            BluetoothManager.targetCharacteristic = characteristic;
+            print('Characteristic found and set.');
+            break;
+          }
+        }
+      }
     }
   }
 
@@ -170,6 +192,8 @@ class _BluetoothManagerState extends State<BluetoothManager> {
       await _selectedDevice!.disconnect();
       setState(() {
         _selectedDevice = null;
+        BluetoothManager.connectedDevice = null;
+        BluetoothManager.targetCharacteristic = null;
       });
       BluetoothManager.isConnectedNotifier.value = false;
       print('Disconnected');
