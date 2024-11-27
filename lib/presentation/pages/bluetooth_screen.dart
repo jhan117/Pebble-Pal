@@ -23,7 +23,7 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
           height: 500,
           child: Column(
             children: [
-              Expanded(
+              const Expanded(
                 child: Rectangle12(),
               ),
               const SizedBox(height: 16),
@@ -130,7 +130,7 @@ class BluetoothManager extends StatefulWidget {
   static final ValueNotifier<bool> isConnectedNotifier =
       ValueNotifier<bool>(false);
   @override
-  _BluetoothManagerState createState() => _BluetoothManagerState();
+  State<BluetoothManager> createState() => _BluetoothManagerState();
 }
 
 class _BluetoothManagerState extends State<BluetoothManager> {
