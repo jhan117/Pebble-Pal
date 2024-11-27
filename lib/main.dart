@@ -5,9 +5,14 @@ import 'package:graytalk/presentation/state/question_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+const String skipBluetooth =
+    String.fromEnvironment('SKIP_BLUETOOTH', defaultValue: 'false');
+const bool isDebugMode = skipBluetooth == 'true';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting();
+
   runApp(ChangeNotifierProvider(
     create: (context) => QuestionProvider(),
     child: const MainApp(),
