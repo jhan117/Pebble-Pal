@@ -7,6 +7,16 @@ class LightingBluetooth {
 
   Future<void> sendRGB(int r, int g, int b) async {
     String rgbValue = "$r,$g,$b";
-    await targetCharacteristic.write(rgbValue.codeUnits, withoutResponse: true);
+    await targetCharacteristic.write(
+      rgbValue.codeUnits,
+      withoutResponse: false,
+    );
+  }
+
+  Future<void> turnOffLED() async {
+    await targetCharacteristic.write(
+      "0".codeUnits,
+      withoutResponse: false,
+    );
   }
 }
