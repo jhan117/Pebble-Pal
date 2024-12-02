@@ -90,7 +90,7 @@ class _LightingScreenState extends State<LightingScreen> {
                     child: Text("저장", style: bodyMedium),
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -103,7 +103,7 @@ class _LightingScreenState extends State<LightingScreen> {
                     child: Text("삭제", style: bodyMedium),
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -113,7 +113,7 @@ class _LightingScreenState extends State<LightingScreen> {
                     child: Text("ON", style: bodyMedium),
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
