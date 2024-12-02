@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:graytalk/data/model/diary_model.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:graytalk/core/theme/colors.dart';
 import 'package:graytalk/core/theme/fonts.dart';
@@ -13,15 +15,28 @@ class CalendarWidget extends StatefulWidget {
 class _CalendarWidgetState extends State<CalendarWidget> {
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
+  late Future<List<DiaryModel>> _eventsForSelectedDate;
 
-  final Map<String, String> _dummyDiaryData = {
-    '2024-11-18': "일기1",
-    '2024-11-19': "일기2",
-    '2024-11-20': "일기3",
-  };
+  @override
+  void initState() {
+    super.initState();
+    _eventsForSelectedDate = _fetchEvents(_selectedDay);
+  }
 
-  String _formatDate(DateTime date) {
-    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+  Future<List<DiaryModel>> _fetchEvents(DateTime date) async {
+    String formattedDate =
+        '${date.year}${date.month.toString().padLeft(2, '0')}${date.day.toString().padLeft(2, '0')}';
+
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('diaries')
+        .where('date', isEqualTo: formattedDate)
+        .get();
+
+    return snapshot.docs.map(
+      (QueryDocumentSnapshot e) {
+        return DiaryModel.fromJson(json: e.data() as Map<String, dynamic>);
+      },
+    ).toList();
   }
 
   @override
@@ -39,6 +54,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               setState(() {
                 _selectedDay = selectedDay;
                 _focusedDay = focusedDay;
+                _eventsForSelectedDate = _fetchEvents(_selectedDay);
               });
             },
             calendarFormat: CalendarFormat.month,
@@ -77,11 +93,31 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                   ),
                   const SizedBox(height: 10),
                   Expanded(
-                    child: SingleChildScrollView(
-                      child: Text(
-                        _dummyDiaryData[_formatDate(_selectedDay)] ?? "일기 없음",
-                        style: bodyLarge,
-                      ),
+                    child: FutureBuilder<List<DiaryModel>>(
+                      future: _eventsForSelectedDate,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+
+                        if (snapshot.hasError) {
+                          return const Center(
+                              child: Text('일기 정보를 가져오지 못했습니다.'));
+                        }
+
+                        final events = snapshot.data ?? [];
+                        if (events.isEmpty) {
+                          return const Center(child: Text('일기 없음'));
+                        }
+
+                        return ListView.builder(
+                          itemCount: events.length,
+                          itemBuilder: (context, index) =>
+                              Text(events[index].content),
+                        );
+                      },
                     ),
                   ),
                 ],

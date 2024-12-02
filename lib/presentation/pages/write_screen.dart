@@ -37,8 +37,6 @@ class _WriteScreenState extends State<WriteScreen> {
   Future<void> _onCreate() async {
     final content = _textController.text;
 
-    print(content);
-
     if (content.isEmpty) {
       return;
     }
