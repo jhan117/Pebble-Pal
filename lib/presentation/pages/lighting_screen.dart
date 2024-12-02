@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:graytalk/core/theme/fonts.dart';
 import 'package:graytalk/presentation/widgets/lighting_ui.dart';
 import 'package:graytalk/presentation/widgets/lighting_controller.dart';
 import 'package:graytalk/presentation/widgets/rgb_send.dart';
@@ -47,6 +48,18 @@ class _LightingScreenState extends State<LightingScreen> {
     }
   }
 
+  Future<void> _turnOffLED() async {
+    if (BluetoothManager.targetCharacteristic != null) {
+      final lightingBluetooth = LightingBluetooth(
+        targetCharacteristic: BluetoothManager.targetCharacteristic!,
+      );
+
+      await lightingBluetooth.turnOffLED();
+    } else {
+      print('No characteristic found.');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,25 +76,52 @@ class _LightingScreenState extends State<LightingScreen> {
               ),
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(
-                  onPressed: () {
-                    lightingController.saveCurrentColor();
-                    setState(() {});
-                  },
-                  child: const Text("색상 저장"),
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      textStyle: bodyMedium,
+                    ),
+                    onPressed: () {
+                      lightingController.saveCurrentColor();
+                      setState(() {});
+                    },
+                    child: Text("저장", style: bodyMedium),
+                  ),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    lightingController.deleteCurrentColor();
-                    setState(() {});
-                  },
-                  child: const Text("색상 삭제"),
+                SizedBox(width: 10),
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      textStyle: bodyMedium,
+                    ),
+                    onPressed: () {
+                      lightingController.deleteCurrentColor();
+                      setState(() {});
+                    },
+                    child: Text("삭제", style: bodyMedium),
+                  ),
                 ),
-                ElevatedButton(
-                  onPressed: _sendRGBToDevice,
-                  child: const Text("LED 적용"),
+                SizedBox(width: 10),
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      textStyle: bodyMedium,
+                    ),
+                    onPressed: _sendRGBToDevice,
+                    child: Text("ON", style: bodyMedium),
+                  ),
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      textStyle: bodyMedium,
+                    ),
+                    onPressed: _turnOffLED,
+                    child: Text("OFF", style: bodyMedium),
+                  ),
                 ),
               ],
             ),
