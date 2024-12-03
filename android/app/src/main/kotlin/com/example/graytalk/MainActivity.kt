@@ -1,4 +1,4 @@
-package com.example.graytalk
+package com.pebblepal.graytalk
 
 import io.flutter.embedding.android.FlutterActivity
 

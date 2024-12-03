@@ -1,11 +1,25 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:graytalk/core/theme/colors.dart';
-import 'package:graytalk/core/theme/fonts.dart';
+import 'package:graytalk/core/theme/app_theme.dart';
+import 'package:graytalk/firebase_options.dart';
 import 'package:graytalk/presentation/pages/splash_screen.dart';
+import 'package:graytalk/presentation/state/question_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
-void main() {
-  runApp(const MainApp());
+const String skipBluetooth =
+    String.fromEnvironment('SKIP_BLUETOOTH', defaultValue: 'false');
+const bool isDebugMode = skipBluetooth == 'true';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  runApp(ChangeNotifierProvider(
+    create: (context) => QuestionProvider(),
+    child: const MainApp(),
+  ));
 }
 
 class MainApp extends StatelessWidget {
@@ -15,29 +29,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: GoogleFonts.notoSans().fontFamily,
-        textTheme: TextTheme(
-          titleLarge: titleLarge,
-          bodyMedium: bodyMedium,
-        ),
-        scaffoldBackgroundColor: colorScheme.surface,
-        appBarTheme: AppBarTheme(
-          backgroundColor: colorScheme.surface,
-        ),
-        bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: colorScheme.onSurface,
-          unselectedItemColor: colorScheme.outlineVariant,
-          backgroundColor: colorScheme.surface,
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: colorScheme.primaryContainer,
-            foregroundColor: colorScheme.onPrimaryContainer,
-          ),
-        ),
-      ),
+      theme: appTheme,
       home: const SplashScreen(),
     );
   }

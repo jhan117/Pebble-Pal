@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:graytalk/presentation/pages/diary_screen.dart';
+import 'package:graytalk/presentation/widgets/diary_calendar.dart';
 import 'package:graytalk/presentation/pages/home_screen.dart';
+import 'package:graytalk/presentation/state/question_provider.dart';
+import 'package:graytalk/presentation/pages/lighting_screen.dart';
+import 'package:provider/provider.dart';
 
 class RootScreen extends StatefulWidget {
   const RootScreen({super.key});
@@ -8,20 +13,40 @@ class RootScreen extends StatefulWidget {
   State<RootScreen> createState() => _RootScreenState();
 }
 
-class _RootScreenState extends State<RootScreen> with TickerProviderStateMixin {
-  TabController? _tabController;
+class _RootScreenState extends State<RootScreen> {
+  int _curPage = 2;
+  late PageController _pageController;
 
   @override
   void initState() {
     super.initState();
 
-    _tabController = TabController(length: 5, vsync: this);
-    _tabController!.index = 2;
-    _tabController!.addListener(tabListener);
+    _pageController = PageController(initialPage: _curPage);
   }
 
-  void tabListener() {
-    setState(() {});
+  @override
+  void dispose() {
+    super.dispose();
+
+    _pageController.dispose();
+  }
+
+  void _onPageChanged(int page) {
+    setState(() {
+      _curPage = page;
+    });
+
+    if (page == 2) {
+      context.read<QuestionProvider>().getRandQuestion();
+    }
+  }
+
+  void _onItemTapped(int index) {
+    _pageController.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
   }
 
   @override
@@ -29,44 +54,50 @@ class _RootScreenState extends State<RootScreen> with TickerProviderStateMixin {
     final textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'Graytalk',
-            style: textTheme.titleLarge,
-          ),
-          centerTitle: true,
+      appBar: AppBar(
+        title: Text(
+          'Graytalk',
+          style: textTheme.titleLarge,
         ),
-        body:
-            TabBarView(controller: _tabController, children: renderChildren()),
-        bottomNavigationBar: renderBottomNavigation());
-  }
-
-  List<Widget> renderChildren() {
-    return [
-      const Text("light"),
-      const Text("stack"),
-      const HomeScreen(),
-      const Text("check"),
-      const Text("settings"),
-    ];
-  }
-
-  BottomNavigationBar renderBottomNavigation() {
-    return BottomNavigationBar(
-      currentIndex: _tabController!.index,
-      onTap: (int idx) {
-        setState(() {
-          _tabController!.animateTo(idx);
-        });
-      },
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.lightbulb), label: "무드등"),
-        BottomNavigationBarItem(icon: Icon(Icons.layers), label: "일기"),
-        BottomNavigationBarItem(icon: Icon(Icons.eco), label: "홈"),
-        BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today), label: "월간 일기"),
-        BottomNavigationBarItem(icon: Icon(Icons.settings), label: "설정"),
-      ],
+        centerTitle: true,
+      ),
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: _onPageChanged,
+        children: const [
+          LightingScreen(),
+          DiaryScreen(),
+          HomeScreen(),
+          DiaryCalendar(),
+          Text("settings"),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _curPage,
+        onTap: _onItemTapped,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.lightbulb),
+            label: "무드등",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.layers),
+            label: "일기",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.eco),
+            label: "홈",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.calendar_today),
+            label: "월간 일기",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: "설정",
+          ),
+        ],
+      ),
     );
   }
 }
