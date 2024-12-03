@@ -1,13 +1,21 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:graytalk/core/theme/app_theme.dart';
+import 'package:graytalk/firebase_options.dart';
 import 'package:graytalk/presentation/pages/splash_screen.dart';
 import 'package:graytalk/presentation/state/question_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+const String skipBluetooth =
+    String.fromEnvironment('SKIP_BLUETOOTH', defaultValue: 'false');
+const bool isDebugMode = skipBluetooth == 'true';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   runApp(ChangeNotifierProvider(
     create: (context) => QuestionProvider(),
     child: const MainApp(),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graytalk/presentation/state/question_provider.dart';
-import 'package:graytalk/presentation/widgets/question_box.dart';
+import 'package:graytalk/presentation/widgets/question_card.dart';
 import 'package:provider/provider.dart';
 
 class DiaryScreen extends StatelessWidget {
@@ -18,9 +18,9 @@ class DiaryScreen extends StatelessWidget {
       runAlignment: WrapAlignment.center,
       children: List.generate(
         questions.length,
-        (idx) => QuestionBox(
-          questionIdx: idx,
-          questionText: questions[idx],
+        (idx) => QuestionCard(
+          index: idx,
+          question: questions[idx],
           onRefresh: () => questionProvider.refreshQuestionAt(idx),
         ),
       ),

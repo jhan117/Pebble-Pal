@@ -89,11 +89,11 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
+            VALUE "CompanyName", "com.pebblepal" "\0"
             VALUE "FileDescription", "graytalk" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "graytalk" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2024 com.pebblepal. All rights reserved." "\0"
             VALUE "OriginalFilename", "graytalk.exe" "\0"
             VALUE "ProductName", "graytalk" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"

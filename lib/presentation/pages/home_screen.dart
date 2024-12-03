@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:graytalk/presentation/state/question_provider.dart';
-import 'package:graytalk/presentation/widgets/question_box.dart';
+import 'package:graytalk/presentation/widgets/question_card.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -38,9 +38,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           const SizedBox(height: 20),
-          QuestionBox(
-            questionIdx: questionProvider.selectedIdx,
-            questionText: question,
+          QuestionCard(
+            index: questionProvider.selectedIdx,
+            question: question,
             onRefresh: refreshQuestion,
           ),
           const SizedBox(height: 32),
