@@ -1,41 +1,46 @@
-class DiaryModel {
+import 'package:intl/intl.dart';
+
+class Diary {
   final String id;
-  final int questionIdx;
+  final String question;
   final String content;
   final DateTime date;
 
-  DiaryModel({
+  Diary({
     required this.id,
-    required this.questionIdx,
+    required this.question,
     required this.content,
     required this.date,
   });
 
-  DiaryModel.fromJson({required Map<String, dynamic> json})
-      : id = json['id'],
-        questionIdx = json['questionIdx'],
-        content = json['content'],
-        date = DateTime.parse(json['date']);
+  factory Diary.fromJson(Map<String, dynamic> json) {
+    return Diary(
+      id: json['id'] as String,
+      question: json['question'] as String,
+      content: json['content'] as String,
+      date: DateTime.parse(json['date'] as String),
+    );
+  }
 
   Map<String, dynamic> toJson() {
+    final dateFormat = DateFormat('yyyyMMdd');
     return {
       'id': id,
-      'questionIdx': questionIdx,
+      'question': question,
       'content': content,
-      'date':
-          '${date.year}${date.month.toString().padLeft(2, '0')}${date.day.toString().padLeft(2, '0')}',
+      'date': dateFormat.format(date),
     };
   }
 
-  DiaryModel copyWith({
+  Diary clone({
     String? id,
-    int? questionIdx,
+    String? question,
     String? content,
     DateTime? date,
   }) {
-    return DiaryModel(
+    return Diary(
       id: id ?? this.id,
-      questionIdx: questionIdx ?? this.questionIdx,
+      question: question ?? this.question,
       content: content ?? this.content,
       date: date ?? this.date,
     );
