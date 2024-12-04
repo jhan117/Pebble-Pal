@@ -1,9 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:graytalk/core/theme/app_theme.dart';
+import 'package:graytalk/app/theme/app_theme.dart';
 import 'package:graytalk/firebase_options.dart';
-import 'package:graytalk/presentation/pages/splash_screen.dart';
-import 'package:graytalk/presentation/state/question_provider.dart';
+import 'package:graytalk/features/common/screen/splash_screen.dart';
+import 'package:graytalk/features/diary/state/question_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
