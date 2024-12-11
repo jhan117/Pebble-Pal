@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:graytalk/features/diary/screen/diary_calendar_screen.dart';
 import 'package:graytalk/features/diary/screen/diary_screen.dart';
-import 'package:graytalk/features/diary/widgets/diary_calendar.dart';
 import 'package:graytalk/features/common/screen/home_screen.dart';
 import 'package:graytalk/features/diary/state/question_provider.dart';
 import 'package:graytalk/features/light/screen/lighting_screen.dart';
@@ -68,7 +68,7 @@ class _RootScreenState extends State<RootScreen> {
           LightingScreen(),
           DiaryScreen(),
           HomeScreen(),
-          DiaryCalendar(),
+          DiaryCalendarScreen(),
           Text("settings"),
         ],
       ),
