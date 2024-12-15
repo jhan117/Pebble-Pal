@@ -19,4 +19,14 @@ class LightingBluetooth {
       withoutResponse: false,
     );
   }
+
+  Future<void> sendCommandTwo() async {
+    try {
+      await targetCharacteristic.write(
+        "2".codeUnits,
+        withoutResponse: false,
+      );
+      print("Command 2 sent to BLE device");
+    } catch (e) {}
+  }
 }

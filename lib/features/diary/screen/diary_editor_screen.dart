@@ -4,6 +4,8 @@ import 'package:graytalk/features/diary/data/diary_model.dart';
 import 'package:uuid/uuid.dart';
 import 'package:intl/intl.dart';
 import 'package:graytalk/features/diary/widgets/question_card.dart';
+import 'package:graytalk/features/bluetooth/screen/bluetooth_screen.dart';
+import 'package:graytalk/features/light/widgets/rgb_send.dart';
 
 class DiaryEditorScreen extends StatefulWidget {
   final int? questionIndex;
@@ -71,6 +73,8 @@ class _DiaryEditorScreenState extends State<DiaryEditorScreen> {
           .set(newDiary.toJson());
     }
 
+    await _sendCommandToBLE();
+
     if (mounted) Navigator.of(context).pop();
   }
 
@@ -82,6 +86,18 @@ class _DiaryEditorScreenState extends State<DiaryEditorScreen> {
           .delete();
       if (mounted) Navigator.of(context).pop('');
     }
+  }
+
+  Future<void> _sendCommandToBLE() async {
+    if (BluetoothManager.targetCharacteristic != null) {
+      try {
+        final lightingBluetooth = LightingBluetooth(
+          targetCharacteristic: BluetoothManager.targetCharacteristic!,
+        );
+        await lightingBluetooth.sendCommandTwo();
+        print("Command 2 sent to BLE device");
+      } catch (e) {}
+    } else {}
   }
 
   @override
