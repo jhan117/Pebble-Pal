@@ -5,6 +5,9 @@ class DiaryRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final String _collection = 'diaries';
 
+  String _formatDate(DateTime date) =>
+      '${date.year}${date.month.toString().padLeft(2, '0')}${date.day.toString().padLeft(2, '0')}';
+
   // create
   Future<void> add(Diary diary) async {
     try {
@@ -17,7 +20,7 @@ class DiaryRepository {
     }
   }
 
-  // Read
+  // read
   Stream<List<Diary>> getByDate(DateTime date) {
     try {
       final formattedDate = _formatDate(date);
@@ -57,7 +60,7 @@ class DiaryRepository {
     }
   }
 
-  // Delete
+  // delete
   Future<void> delete(String diaryId) async {
     try {
       await _firestore.collection(_collection).doc(diaryId).delete();
@@ -65,7 +68,4 @@ class DiaryRepository {
       throw Exception('Failed to delete diary: $e');
     }
   }
-
-  String _formatDate(DateTime date) =>
-      '${date.year}${date.month.toString().padLeft(2, '0')}${date.day.toString().padLeft(2, '0')}';
 }

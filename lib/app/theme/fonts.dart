@@ -31,4 +31,5 @@ final bodyMedium = TextStyle(
   fontSize: 14,
   fontWeight: FontWeight.normal,
   color: colorScheme.onSurfaceVariant,
+  height: 1.7,
 );
