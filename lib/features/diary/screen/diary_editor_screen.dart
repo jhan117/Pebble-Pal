@@ -140,7 +140,7 @@ class _DiaryEditorScreenState extends State<DiaryEditorScreen> {
       id: widget.diaryId!,
       question: widget.questionText,
       content: content,
-      date: DateTime.now(),
+      date: widget.selectedDate!,
     );
     await _diaryRepository.update(updatedDiary);
   }
