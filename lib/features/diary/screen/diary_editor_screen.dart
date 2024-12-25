@@ -116,7 +116,7 @@ class _DiaryEditorScreenState extends State<DiaryEditorScreen> {
     } else {
       final newDiary = Diary(
         id: const Uuid().v4(),
-        question: widget.diary!.question,
+        question: widget.questionText!,
         content: content,
         date: DateTime.now(),
       );

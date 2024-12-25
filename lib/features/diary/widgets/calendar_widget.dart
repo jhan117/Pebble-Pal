@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:graytalk/features/diary/data/diary_model.dart';
 import 'package:graytalk/features/diary/state/diary_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -6,14 +7,14 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:graytalk/app/theme/fonts.dart';
 
 class CalendarWidget extends StatefulWidget {
-  final DateTime selectedDate;
-  final DateTime focusedDate;
+  final DateTime selectedDay;
+  final DateTime focusedDay;
   final void Function(DateTime, DateTime) changeDay;
 
   const CalendarWidget({
     super.key,
-    required this.selectedDate,
-    required this.focusedDate,
+    required this.selectedDay,
+    required this.focusedDay,
     required this.changeDay,
   });
 
@@ -32,13 +33,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    context.read<DiaryProvider>().getByMonth(
-          DateTime.now().year,
-          DateTime.now().month,
-        );
+  List<Diary> _getDiaryForDay(DateTime day) {
+    return context.watch<DiaryProvider>().getByDay(day.day);
   }
 
   @override
@@ -52,31 +48,30 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         locale: 'ko_KR',
         firstDay: DateTime.utc(2000, 1, 1),
         lastDay: DateTime.utc(2100, 12, 31),
-        focusedDay: widget.focusedDate,
+        focusedDay: widget.focusedDay,
         onDaySelected: (selectedDay, focusedDay) {
-          widget.changeDay(selectedDay, focusedDay);
+          if (selectedDay.month != focusedDay.month) {
+            widget.changeDay(selectedDay, selectedDay);
+          } else {
+            widget.changeDay(selectedDay, focusedDay);
+          }
         },
-        selectedDayPredicate: (day) => isSameDay(widget.focusedDate, day),
+        selectedDayPredicate: (day) => isSameDay(widget.selectedDay, day),
         calendarFormat: _calendarFormat,
         onHeaderTapped: (focusedDay) {
           _toggleCalendarFormat();
         },
         onPageChanged: (focusedDay) {
-          context
-              .read<DiaryProvider>()
-              .getByMonth(focusedDay.year, focusedDay.month);
-
-          final selectedDay = DateTime(
-              focusedDay.year, focusedDay.month, widget.selectedDate.day);
-          widget.changeDay(selectedDay, selectedDay);
+          widget.changeDay(focusedDay, focusedDay);
         },
+        eventLoader: _getDiaryForDay,
         headerStyle: HeaderStyle(
           formatButtonVisible: false,
           titleCentered: true,
           titleTextStyle: bodyLarge,
           titleTextFormatter: (date, locale) =>
               DateFormat('yyyy-MM-dd EEE', locale).format(
-            widget.selectedDate,
+            widget.selectedDay,
           ),
         ),
         calendarStyle: CalendarStyle(
@@ -89,6 +84,10 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             color: Colors.pinkAccent,
             shape: BoxShape.circle,
           ),
+          // marker style
+          markersMaxCount: 1,
+          markerSize: 5,
+          markersAnchor: 1.25,
         ),
       ),
     );

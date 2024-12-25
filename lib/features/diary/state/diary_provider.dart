@@ -5,8 +5,10 @@ import 'package:graytalk/features/diary/data/diary_repository.dart';
 class DiaryProvider extends ChangeNotifier {
   final DiaryRepository _diaryRepository = DiaryRepository();
   List<Diary> _diaries = [];
+  DateTime _getDay = DateTime.now();
 
   List<Diary> get diaries => _diaries;
+  DateTime get getDay => _getDay;
 
   // create
   Future<void> addDiary(Diary diary) async {
@@ -27,6 +29,7 @@ class DiaryProvider extends ChangeNotifier {
     try {
       final snapshot = await _diaryRepository.getByMonth(year, month);
       _diaries = snapshot;
+      _getDay = DateTime(year, month);
       notifyListeners();
     } catch (e) {
       throw Exception('Failed to fetch diaries: $e');
