@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:graytalk/app/theme/app_theme.dart';
+import 'package:graytalk/features/diary/state/diary_provider.dart';
 import 'package:graytalk/firebase_options.dart';
 import 'package:graytalk/features/common/screen/splash_screen.dart';
 import 'package:graytalk/features/diary/state/question_provider.dart';
@@ -16,8 +17,15 @@ void main() async {
   await initializeDateFormatting();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  runApp(ChangeNotifierProvider(
-    create: (context) => QuestionProvider(),
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(
+        create: (context) => QuestionProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (context) => DiaryProvider(),
+      ),
+    ],
     child: const MainApp(),
   ));
 }

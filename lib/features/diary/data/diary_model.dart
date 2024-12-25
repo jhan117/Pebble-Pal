@@ -6,6 +6,9 @@ class Diary {
   final String content;
   final DateTime date;
 
+  int get year => date.year;
+  int get month => date.month;
+
   Diary({
     required this.id,
     required this.question,
@@ -18,17 +21,18 @@ class Diary {
       id: json['id'] as String,
       question: json['question'] as String,
       content: json['content'] as String,
-      date: DateTime.parse(json['date'] as String),
+      date: DateFormat('yyyy MM dd').parse(json['date'] as String),
     );
   }
 
   Map<String, dynamic> toJson() {
-    final dateFormat = DateFormat('yyyyMMdd');
     return {
       'id': id,
       'question': question,
       'content': content,
-      'date': dateFormat.format(date),
+      'date': DateFormat('yyyy MM dd').format(date),
+      'year': year,
+      'month': month,
     };
   }
 

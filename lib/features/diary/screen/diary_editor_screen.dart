@@ -1,26 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:graytalk/features/diary/data/diary_model.dart';
-import 'package:graytalk/features/diary/data/diary_repository.dart';
+import 'package:graytalk/features/diary/state/diary_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:intl/intl.dart';
 import 'package:graytalk/features/diary/widgets/question_card.dart';
 
 class DiaryEditorScreen extends StatefulWidget {
-  final int? questionIndex;
-  final String questionText;
-  final String? diaryId;
-  final String? initialContent;
   final bool isEditing;
-  final DateTime? selectedDate;
+  final int? questionIndex;
+  final String? questionText;
+  final Diary? diary;
 
   const DiaryEditorScreen({
     super.key,
-    this.questionIndex,
-    required this.questionText,
-    this.diaryId,
-    this.initialContent,
     this.isEditing = false,
-    this.selectedDate,
+    this.questionIndex,
+    this.questionText,
+    this.diary,
   });
 
   @override
@@ -30,15 +27,19 @@ class DiaryEditorScreen extends StatefulWidget {
 class _DiaryEditorScreenState extends State<DiaryEditorScreen> {
   final TextEditingController _textController = TextEditingController();
   late final String _formattedDate;
-  final DiaryRepository _diaryRepository = DiaryRepository();
+  late final DiaryProvider _diaryProvider;
 
   @override
   void initState() {
     super.initState();
-    _formattedDate = DateFormat('yyyy년 MM월 dd일')
-        .format(widget.selectedDate ?? DateTime.now());
-    if (widget.initialContent != null) {
-      _textController.text = widget.initialContent!;
+    DateFormat titleFormat = DateFormat("yyyy년 MM월 dd일");
+    _diaryProvider = context.read<DiaryProvider>();
+
+    if (widget.isEditing) {
+      _formattedDate = titleFormat.format(widget.diary!.date);
+      _textController.text = widget.diary!.content;
+    } else {
+      _formattedDate = titleFormat.format(DateTime.now());
     }
   }
 
@@ -63,7 +64,7 @@ class _DiaryEditorScreenState extends State<DiaryEditorScreen> {
           const SizedBox(height: 16),
           QuestionCard(
             index: widget.questionIndex,
-            question: widget.questionText,
+            question: widget.questionText ?? widget.diary!.question,
           ),
           Expanded(
             child: Padding(
@@ -101,6 +102,7 @@ class _DiaryEditorScreenState extends State<DiaryEditorScreen> {
     );
   }
 
+  // save button
   Future<void> _handleSave() async {
     final content = _textController.text;
 
@@ -110,39 +112,24 @@ class _DiaryEditorScreenState extends State<DiaryEditorScreen> {
     }
 
     if (widget.isEditing) {
-      await _updateDiary(content);
+      await _diaryProvider.updateDiary(widget.diary!, content);
     } else {
-      await _createDiary(content);
+      final newDiary = Diary(
+        id: const Uuid().v4(),
+        question: widget.diary!.question,
+        content: content,
+        date: DateTime.now(),
+      );
+      await _diaryProvider.addDiary(newDiary);
     }
 
     _navigateBack();
   }
 
+  // delete button
   Future<void> _handleDelete() async {
-    if (widget.diaryId != null) {
-      await _diaryRepository.delete(widget.diaryId!);
-    }
+    await _diaryProvider.deleteDiary(widget.diary!);
     _navigateBack();
-  }
-
-  Future<void> _createDiary(String content) async {
-    final newDiary = Diary(
-      id: const Uuid().v4(),
-      question: widget.questionText,
-      content: content,
-      date: DateTime.now(),
-    );
-    await _diaryRepository.add(newDiary);
-  }
-
-  Future<void> _updateDiary(String content) async {
-    final updatedDiary = Diary(
-      id: widget.diaryId!,
-      question: widget.questionText,
-      content: content,
-      date: widget.selectedDate!,
-    );
-    await _diaryRepository.update(updatedDiary);
   }
 
   void _navigateBack() {

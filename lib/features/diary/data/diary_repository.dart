@@ -5,14 +5,16 @@ class DiaryRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final String _collection = 'diaries';
 
-  String _formatDate(DateTime date) =>
-      '${date.year}${date.month.toString().padLeft(2, '0')}${date.day.toString().padLeft(2, '0')}';
-
   // create
   Future<void> add(Diary diary) async {
+    final year = diary.year.toString();
+    final month = diary.month.toString().padLeft(2, '0');
+
     try {
       await _firestore
           .collection(_collection)
+          .doc(year)
+          .collection(month)
           .doc(diary.id)
           .set(diary.toJson());
     } catch (e) {
@@ -21,49 +23,45 @@ class DiaryRepository {
   }
 
   // read
-  Stream<List<Diary>> getByDate(DateTime date) {
+  Future<List<Diary>> getByMonth(int year, int month) async {
     try {
-      final formattedDate = _formatDate(date);
-      return _firestore
+      final snapshot = await _firestore
           .collection(_collection)
-          .where('date', isEqualTo: formattedDate)
-          .snapshots()
-          .map((snapshot) =>
-              snapshot.docs.map((doc) => Diary.fromJson(doc.data())).toList());
-    } catch (e) {
-      throw Exception('Failed to get diaries by date: $e');
-    }
-  }
+          .doc(year.toString())
+          .collection(month.toString().padLeft(2, '0'))
+          .get();
 
-  Future<Diary?> getById(String diaryId) async {
-    try {
-      final docSnapshot =
-          await _firestore.collection(_collection).doc(diaryId).get();
-      if (docSnapshot.exists) {
-        return Diary.fromJson(docSnapshot.data()!);
-      }
-      return null;
+      return snapshot.docs.map((doc) => Diary.fromJson(doc.data())).toList();
     } catch (e) {
       throw Exception('Failed to fetch diary: $e');
     }
   }
 
   // update
-  Future<void> update(Diary diary) async {
+  Future<void> update(Diary diary, String newContent) async {
     try {
       await _firestore
           .collection(_collection)
+          .doc(diary.year.toString())
+          .collection(diary.month.toString().padLeft(2, '0'))
           .doc(diary.id)
-          .update(diary.toJson());
+          .update({
+        'content': newContent,
+      });
     } catch (e) {
       throw Exception('Failed to update diary: $e');
     }
   }
 
   // delete
-  Future<void> delete(String diaryId) async {
+  Future<void> delete(Diary diary) async {
     try {
-      await _firestore.collection(_collection).doc(diaryId).delete();
+      await _firestore
+          .collection(_collection)
+          .doc(diary.year.toString())
+          .collection(diary.month.toString().padLeft(2, '0'))
+          .doc(diary.id)
+          .delete();
     } catch (e) {
       throw Exception('Failed to delete diary: $e');
     }

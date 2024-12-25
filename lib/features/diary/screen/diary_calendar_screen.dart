@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:graytalk/features/diary/data/diary_repository.dart';
 import 'package:graytalk/features/diary/widgets/calendar_widget.dart';
 import 'package:graytalk/features/diary/widgets/diary_widget.dart';
 
@@ -11,14 +10,13 @@ class DiaryCalendarScreen extends StatefulWidget {
 }
 
 class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
-  DateTime _selectedDate = DateTime.now();
-  DateTime _focusedDate = DateTime.now();
-  final diaryRepo = DiaryRepository();
+  DateTime _selectedDay = DateTime.now();
+  DateTime _focusedDay = DateTime.now();
 
-  _onDaySelected(selectedDay, focusedDay) {
+  _changeDay(selectedDay, focusedDay) {
     setState(() {
-      _selectedDate = selectedDay;
-      _focusedDate = focusedDay;
+      _selectedDay = selectedDay;
+      _focusedDay = focusedDay;
     });
   }
 
@@ -27,11 +25,11 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
     return Column(
       children: [
         CalendarWidget(
-          selectedDate: _selectedDate,
-          focusedDate: _focusedDate,
-          onDaySelected: _onDaySelected,
+          selectedDate: _selectedDay,
+          focusedDate: _focusedDay,
+          changeDay: _changeDay,
         ),
-        DiaryWidget(selectedDate: _selectedDate),
+        DiaryWidget(selectedDate: _selectedDay),
       ],
     );
   }

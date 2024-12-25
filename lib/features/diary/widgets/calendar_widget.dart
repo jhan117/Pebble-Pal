@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:graytalk/features/diary/state/diary_provider.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:graytalk/app/theme/fonts.dart';
 
 class CalendarWidget extends StatefulWidget {
   final DateTime selectedDate;
   final DateTime focusedDate;
-  final void Function(DateTime, DateTime) onDaySelected;
+  final void Function(DateTime, DateTime) changeDay;
 
   const CalendarWidget({
     super.key,
     required this.selectedDate,
     required this.focusedDate,
-    required this.onDaySelected,
+    required this.changeDay,
   });
 
   @override
@@ -31,6 +33,15 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    context.read<DiaryProvider>().getByMonth(
+          DateTime.now().year,
+          DateTime.now().month,
+        );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
@@ -43,12 +54,21 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         lastDay: DateTime.utc(2100, 12, 31),
         focusedDay: widget.focusedDate,
         onDaySelected: (selectedDay, focusedDay) {
-          widget.onDaySelected(selectedDay, focusedDay);
+          widget.changeDay(selectedDay, focusedDay);
         },
         selectedDayPredicate: (day) => isSameDay(widget.focusedDate, day),
         calendarFormat: _calendarFormat,
         onHeaderTapped: (focusedDay) {
           _toggleCalendarFormat();
+        },
+        onPageChanged: (focusedDay) {
+          context
+              .read<DiaryProvider>()
+              .getByMonth(focusedDay.year, focusedDay.month);
+
+          final selectedDay = DateTime(
+              focusedDay.year, focusedDay.month, widget.selectedDate.day);
+          widget.changeDay(selectedDay, selectedDay);
         },
         headerStyle: HeaderStyle(
           formatButtonVisible: false,
