@@ -45,11 +45,14 @@ class _DiaryEditorScreenState extends State<DiaryEditorScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(_formattedDate, style: textTheme.titleLarge),
+        title: Text(
+          _formattedDate,
+          style: theme.textTheme.titleMedium,
+        ),
         centerTitle: true,
         leading: const SizedBox(),
         actions: [
@@ -58,26 +61,30 @@ class _DiaryEditorScreenState extends State<DiaryEditorScreen> {
             onPressed: () => Navigator.of(context).pop(),
           ),
         ],
+        scrolledUnderElevation: 0,
       ),
       body: Column(
         children: [
-          const SizedBox(height: 16),
           QuestionCard(
-            index: widget.questionIndex,
-            question: widget.questionText ?? widget.diary!.question,
+            isEdit: true,
+            idx: widget.questionIndex,
+            diaryQuestion: (widget.isEditing ? widget.diary!.question : null),
+            margin: const EdgeInsets.all(12),
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
               child: TextField(
                 controller: _textController,
                 autofocus: true,
                 maxLines: null,
                 textInputAction: TextInputAction.newline,
                 keyboardType: TextInputType.multiline,
-                decoration: const InputDecoration(
+                style: theme.textTheme.bodyMedium,
+                decoration: InputDecoration(
                   border: InputBorder.none,
-                  hintText: "글을 입력해 주세요",
+                  hintText: "글을 입력해 주세요.",
+                  hintStyle: theme.textTheme.bodyMedium,
                 ),
               ),
             ),
@@ -87,12 +94,12 @@ class _DiaryEditorScreenState extends State<DiaryEditorScreen> {
             children: [
               if (widget.isEditing)
                 IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.black),
+                  icon: const Icon(Icons.delete),
                   onPressed: _handleDelete,
                 ),
               const Spacer(),
               IconButton(
-                icon: const Icon(Icons.check, color: Colors.black),
+                icon: const Icon(Icons.check),
                 onPressed: _handleSave,
               ),
             ],

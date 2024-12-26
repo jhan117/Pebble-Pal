@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:graytalk/app/theme/colors.dart';
 import 'package:graytalk/main.dart';
-import 'package:graytalk/features/common/screen/intro_screen.dart';
-import 'package:graytalk/features/common/screen/root_screen.dart';
+import 'package:graytalk/features/intro/screen/onboarding_screen.dart';
+import 'package:graytalk/features/root_screen.dart';
 
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
@@ -15,14 +14,14 @@ class SplashScreen extends StatelessWidget {
       onTap: () {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) =>
-                isDebugMode ? const RootScreen() : const IntroScreen()));
+                isDebugMode ? const RootScreen() : const OnboardingScreen()));
       },
       child: Container(
-        color: colorScheme.surface,
+        color: Theme.of(context).scaffoldBackgroundColor,
         child: Center(
           child: Text(
             'Graytalk',
-            style: textTheme.titleLarge,
+            style: textTheme.headlineMedium,
           ),
         ),
       ),

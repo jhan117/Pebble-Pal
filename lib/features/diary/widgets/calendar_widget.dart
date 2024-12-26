@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:graytalk/app/styles/app_colors.dart';
 import 'package:graytalk/features/diary/data/diary_model.dart';
 import 'package:graytalk/features/diary/state/diary_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:graytalk/app/theme/fonts.dart';
 
 class CalendarWidget extends StatefulWidget {
   final DateTime selectedDay;
@@ -39,6 +39,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
       decoration: const BoxDecoration(
           border: Border(
@@ -68,27 +70,30 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         headerStyle: HeaderStyle(
           formatButtonVisible: false,
           titleCentered: true,
-          titleTextStyle: bodyLarge,
+          titleTextStyle: theme.textTheme.bodyLarge!,
           titleTextFormatter: (date, locale) =>
               DateFormat('yyyy-MM-dd EEE', locale).format(
             widget.selectedDay,
           ),
         ),
         calendarStyle: CalendarStyle(
-          todayTextStyle: bodyMedium,
-          todayDecoration: const BoxDecoration(
-            color: Color.fromARGB(255, 223, 152, 152),
-            shape: BoxShape.circle,
-          ),
-          selectedDecoration: const BoxDecoration(
-            color: Colors.pinkAccent,
-            shape: BoxShape.circle,
-          ),
-          // marker style
-          markersMaxCount: 1,
-          markerSize: 5,
-          markersAnchor: 1.25,
-        ),
+            todayTextStyle: const TextStyle(color: AppColors.primaryColor),
+            todayDecoration: BoxDecoration(
+              color: theme.scaffoldBackgroundColor,
+              shape: BoxShape.circle,
+            ),
+            selectedDecoration: const BoxDecoration(
+              color: AppColors.primaryColor,
+              shape: BoxShape.circle,
+            ),
+            // marker style
+            markersMaxCount: 1,
+            markerSize: 5,
+            markersAnchor: 1.5,
+            markerDecoration: const BoxDecoration(
+              color: AppColors.secondaryColor,
+              shape: BoxShape.circle,
+            )),
       ),
     );
   }

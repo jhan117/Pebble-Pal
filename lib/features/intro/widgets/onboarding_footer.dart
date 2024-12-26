@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:graytalk/app/theme/colors.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:graytalk/features/bluetooth/screen/bluetooth_screen.dart';
+import 'package:graytalk/features/intro/screen/bluetooth_screen.dart';
 
-class IntroFooter extends StatelessWidget {
+class OnboardingFooter extends StatelessWidget {
   final PageController controller;
 
   final int curPage;
   final int pageLength;
 
-  const IntroFooter({
+  const OnboardingFooter({
     super.key,
     required this.controller,
     required this.curPage,
@@ -23,8 +22,8 @@ class IntroFooter extends StatelessWidget {
       children: [
         TextButton(
           style: TextButton.styleFrom(
-            foregroundColor: colorScheme.outlineVariant,
-          ),
+              // foregroundColor: colorScheme.outlineVariant,
+              ),
           onPressed: () {
             controller.previousPage(
               duration: const Duration(milliseconds: 400),
@@ -40,8 +39,8 @@ class IntroFooter extends StatelessWidget {
         ),
         TextButton(
           style: TextButton.styleFrom(
-            foregroundColor: colorScheme.primary,
-          ),
+              // foregroundColor: colorScheme.primary,
+              ),
           onPressed: () {
             if (curPage == pageLength) {
               Navigator.of(context).pushReplacement(MaterialPageRoute(

@@ -1,68 +1,69 @@
 import 'package:flutter/material.dart';
+import 'package:graytalk/app/styles/app_colors.dart';
 import 'package:graytalk/features/diary/screen/diary_editor_screen.dart';
-import 'package:graytalk/app/theme/colors.dart';
+import 'package:graytalk/features/diary/state/question_provider.dart';
+import 'package:provider/provider.dart';
 
 class QuestionCard extends StatelessWidget {
-  final int? index;
-  final String question;
-  final VoidCallback? onRefresh;
+  final bool isEdit;
+  final int? idx;
+  final String? diaryQuestion;
+  final EdgeInsetsGeometry margin;
 
   const QuestionCard({
     super.key,
-    this.index,
-    required this.question,
-    this.onRefresh,
+    this.isEdit = false,
+    this.idx,
+    this.diaryQuestion,
+    required this.margin,
   });
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    List<String> questionParts = question.split('\n');
+    final questionProvider = context.watch<QuestionProvider>();
 
-    return GestureDetector(
-      onTap: () {
-        if (onRefresh != null) {
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => DiaryEditorScreen(
-              questionIndex: index,
-              questionText: question,
-            ),
-          ));
-        }
-      },
+    final question = (idx != null)
+        ? questionProvider.getByIdx(idx!)
+        : questionProvider.question;
+
+    void _handlePress() {
+      if (!isEdit) {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => DiaryEditorScreen(
+            questionIndex: idx ?? questionProvider.selectedIdx,
+            questionText: question,
+          ),
+        ));
+      }
+    }
+
+    return Container(
+      margin: margin,
       child: Stack(
         children: [
-          Container(
+          SizedBox(
             width: double.infinity,
             height: 140,
-            margin: const EdgeInsets.symmetric(horizontal: 32),
-            decoration: BoxDecoration(
-              color: colorScheme.surfaceContainer,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  questionParts[0],
-                  style: textTheme.bodyMedium,
-                ),
-                if (questionParts.length > 1)
-                  Text(
-                    questionParts[1],
-                    style: textTheme.bodyMedium,
-                  ),
-              ],
+            child: ElevatedButton(
+              onPressed: isEdit ? null : _handlePress,
+              style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 16)),
+              child: Text(
+                diaryQuestion ?? question,
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
-          if (onRefresh != null)
+          if (!isEdit)
             Positioned(
-              top: 4,
-              right: 36,
+              top: 2,
+              right: 2,
               child: IconButton(
                 icon: const Icon(Icons.refresh),
                 iconSize: 32,
-                onPressed: onRefresh,
+                onPressed: () {
+                  questionProvider.refreshQuestionAt(idx);
+                },
               ),
             ),
         ],

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:graytalk/app/theme/colors.dart';
-import 'package:graytalk/app/theme/fonts.dart';
 import 'package:graytalk/features/diary/screen/diary_editor_screen.dart';
 import 'package:graytalk/features/diary/state/diary_provider.dart';
+import 'package:graytalk/features/diary/widgets/question_card.dart';
 import 'package:provider/provider.dart';
 
 class DiaryWidget extends StatefulWidget {
@@ -22,13 +21,14 @@ class _DiaryWidgetState extends State<DiaryWidget> {
   Widget build(BuildContext context) {
     final diaries =
         context.watch<DiaryProvider>().getByDay(widget.selectedDate.day);
+    final theme = Theme.of(context);
 
     if (diaries.isEmpty) {
       return Padding(
         padding: const EdgeInsets.all(12.0),
         child: Text(
           "작성된 글이 없습니다.",
-          style: bodyMedium,
+          style: theme.textTheme.bodyMedium,
         ),
       );
     }
@@ -41,20 +41,10 @@ class _DiaryWidgetState extends State<DiaryWidget> {
 
           return Column(
             children: [
-              Container(
-                width: double.infinity,
-                height: 100,
-                decoration: BoxDecoration(
-                  color: colorScheme.surfaceContainer,
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ...diary.question
-                        .split('\n')
-                        .map((q) => Text(q, style: textTheme.bodyMedium))
-                  ],
-                ),
+              QuestionCard(
+                margin: const EdgeInsets.all(12),
+                isEdit: true,
+                diaryQuestion: diary.question,
               ),
               GestureDetector(
                 onTap: () {
@@ -71,7 +61,7 @@ class _DiaryWidgetState extends State<DiaryWidget> {
                     padding: const EdgeInsets.all(12.0),
                     child: Text(
                       diary.content,
-                      style: bodyMedium,
+                      style: theme.textTheme.bodyMedium,
                     ),
                   ),
                 ),

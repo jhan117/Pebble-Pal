@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:graytalk/app/utils/intro_messages.dart';
 
-class IntroMain extends StatelessWidget {
+class OnboardingMain extends StatelessWidget {
   final int idx;
 
-  const IntroMain({super.key, required this.idx});
+  const OnboardingMain({super.key, required this.idx});
 
   @override
   Widget build(BuildContext context) {

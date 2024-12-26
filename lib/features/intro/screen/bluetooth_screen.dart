@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:graytalk/app/theme/colors.dart';
-import 'package:graytalk/features/common/screen/root_screen.dart';
+import 'package:graytalk/features/root_screen.dart';
 
 class BluetoothScreen extends StatefulWidget {
   const BluetoothScreen({super.key});
@@ -17,7 +16,6 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
       context: context,
       barrierDismissible: true,
       builder: (BuildContext context) => AlertDialog(
-        backgroundColor: defaultBG,
         contentPadding: const EdgeInsets.all(16),
         content: SizedBox(
           height: 500,
@@ -60,7 +58,6 @@ class _BluetoothScreenState extends State<BluetoothScreen> {
     final textTheme = Theme.of(context).textTheme;
 
     return Container(
-      color: defaultBG,
       padding: const EdgeInsets.fromLTRB(16, 120, 16, 8),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

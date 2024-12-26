@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:graytalk/features/diary/screen/diary_calendar_screen.dart';
 import 'package:graytalk/features/diary/screen/diary_screen.dart';
-import 'package:graytalk/features/common/screen/home_screen.dart';
+import 'package:graytalk/features/home_screen.dart';
 import 'package:graytalk/features/diary/state/question_provider.dart';
 import 'package:graytalk/features/light/screen/lighting_screen.dart';
+import 'package:graytalk/features/settings/screen/settings_screen.dart';
 import 'package:provider/provider.dart';
 
 class RootScreen extends StatefulWidget {
@@ -51,13 +52,11 @@ class _RootScreenState extends State<RootScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
           'Graytalk',
-          style: textTheme.titleLarge,
+          style: Theme.of(context).textTheme.headlineMedium,
         ),
         centerTitle: true,
       ),
@@ -69,7 +68,7 @@ class _RootScreenState extends State<RootScreen> {
           DiaryScreen(),
           HomeScreen(),
           DiaryCalendarScreen(),
-          Text("settings"),
+          SettingsScreen()
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

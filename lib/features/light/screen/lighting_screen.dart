@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:graytalk/app/theme/fonts.dart';
+import 'package:graytalk/app/styles/app_text_styles.dart';
 import 'package:graytalk/features/light/widgets/lighting_ui.dart';
 import 'package:graytalk/features/light/widgets/lighting_controller.dart';
 import 'package:graytalk/features/light/widgets/rgb_send.dart';
-import 'package:graytalk/features/bluetooth/screen/bluetooth_screen.dart';
+import 'package:graytalk/features/intro/screen/bluetooth_screen.dart';
 
 class LightingScreen extends StatefulWidget {
   const LightingScreen({super.key});
@@ -81,46 +81,58 @@ class _LightingScreenState extends State<LightingScreen> {
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      textStyle: bodyMedium,
-                    ),
+                        // textStyle: bodyMedium,
+                        ),
                     onPressed: () {
                       lightingController.saveCurrentColor();
                       setState(() {});
                     },
-                    child: Text("저장", style: bodyMedium),
+                    child: const Text(
+                      "저장",
+                      // style: bodyMedium,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      textStyle: bodyMedium,
-                    ),
+                        // textStyle: bodyMedium,
+                        ),
                     onPressed: () {
                       lightingController.deleteCurrentColor();
                       setState(() {});
                     },
-                    child: Text("삭제", style: bodyMedium),
+                    child: const Text(
+                      "삭제",
+                      // style: bodyMedium,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      textStyle: bodyMedium,
-                    ),
+                        // textStyle: bodyMedium,
+                        ),
                     onPressed: _sendRGBToDevice,
-                    child: Text("ON", style: bodyMedium),
+                    child: const Text(
+                      "ON",
+                      // style: bodyMedium,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      textStyle: bodyMedium,
-                    ),
+                        // textStyle: bodyMedium,
+                        ),
                     onPressed: _turnOffLED,
-                    child: Text("OFF", style: bodyMedium),
+                    child: const Text(
+                      "OFF",
+                      // style: bodyMedium,
+                    ),
                   ),
                 ),
               ],

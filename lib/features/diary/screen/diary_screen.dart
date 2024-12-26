@@ -19,9 +19,8 @@ class DiaryScreen extends StatelessWidget {
       children: List.generate(
         questions.length,
         (idx) => QuestionCard(
-          index: idx,
-          question: questions[idx],
-          onRefresh: () => questionProvider.refreshQuestionAt(idx),
+          idx: idx,
+          margin: const EdgeInsets.symmetric(horizontal: 24),
         ),
       ),
     );
