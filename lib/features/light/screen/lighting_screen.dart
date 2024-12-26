@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:graytalk/app/styles/app_text_styles.dart';
 import 'package:graytalk/features/light/widgets/lighting_ui.dart';
 import 'package:graytalk/features/light/widgets/lighting_controller.dart';
 import 'package:graytalk/features/light/widgets/rgb_send.dart';

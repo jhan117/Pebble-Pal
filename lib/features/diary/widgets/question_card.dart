@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:graytalk/app/styles/app_colors.dart';
 import 'package:graytalk/features/diary/screen/diary_editor_screen.dart';
 import 'package:graytalk/features/diary/state/question_provider.dart';
 import 'package:provider/provider.dart';
@@ -26,7 +25,7 @@ class QuestionCard extends StatelessWidget {
         ? questionProvider.getByIdx(idx!)
         : questionProvider.question;
 
-    void _handlePress() {
+    void handlePress() {
       if (!isEdit) {
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => DiaryEditorScreen(
@@ -45,7 +44,7 @@ class QuestionCard extends StatelessWidget {
             width: double.infinity,
             height: 140,
             child: ElevatedButton(
-              onPressed: isEdit ? null : _handlePress,
+              onPressed: isEdit ? null : handlePress,
               style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.fromLTRB(24, 16, 24, 16)),
               child: Text(
